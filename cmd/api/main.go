@@ -8,7 +8,9 @@ import (
 
 func main() {
 	db := pkg.InitDB()
-	//pkg.Migration(db.DB)
+
+	//pkg.Migration(db)
+	//pkg.FillDB(db)
 
 	product := handlers.ProductReceiver{
 		DB: db,
@@ -16,15 +18,18 @@ func main() {
 	category := handlers.CategoryReceiver{
 		DB: db,
 	}
+	features := handlers.FeaturesReceiver{
+		DB: db,
+	}
 
 	r := echo.New()
 
-	r.GET("/stocks", product.Get)
-	r.GET("/stocks/filter", nil) // query params kullanılmalıdır.
-	r.POST("/stock/insert", nil)
-	r.PUT("/stock/:id/update", nil)
-	r.DELETE("/stock/:id/delete", nil)
-	r.GET("/stock/:id", nil) // tekil bir ürün getirilecek.
+	r.GET("/stocks", product.GetAll)
+	r.GET("/stock/:id", product.Get) // tekil bir ürün getirilecek.
+	r.GET("/stocks/filter", nil)     // query params kullanılmalıdır.
+	r.POST("/stock/insert", product.Insert)
+	r.PUT("/stock/:id/update", product.Update)
+	r.DELETE("/stock/:id/delete", product.Delete)
 
 	r.POST("/stock/category/insert", nil)
 	r.DELETE("/stock/:id/category/:id/delete", nil)
@@ -33,15 +38,14 @@ func main() {
 	r.GET("/categories", category.GetAll)
 	r.GET("/category/:id", category.Get)
 	r.POST("/category/insert", category.Insert)
-	r.DELETE("/category/:id/delete", category.Delete)
 	r.PUT("/category/:id/update", category.Update)
+	r.DELETE("/category/:id/delete", category.Delete)
+
+	r.GET("/features", features.GetAll)
+	r.GET("/features/:id", features.Get)
+	r.POST("/features/insert", features.Insert)
+	r.PUT("/features/:id/update", features.Update)
+	r.DELETE("/features/:id/delete", features.Delete)
 
 	r.Logger.Fatal(r.Start(":8080"))
 }
-
-/*
-	db.AutoMigrate(&models.Category{})
-	db.Create(&models.Category{
-		Name: "category1",
-	})
-*/
