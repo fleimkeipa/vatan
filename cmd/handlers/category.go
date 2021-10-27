@@ -44,16 +44,6 @@ func (r *CategoryReceiver) Insert(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Inserted Category")
 }
 
-func (r *CategoryReceiver) Delete(c echo.Context) error {
-	id := c.Param("id")
-
-	if err := r.DB.Delete(&models.Category{}, id).Error; err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, "Deleted "+id+"'s Category")
-}
-
 func (r *CategoryReceiver) Update(c echo.Context) error {
 	id := c.Param("id")
 
@@ -66,4 +56,14 @@ func (r *CategoryReceiver) Update(c echo.Context) error {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, "Updated "+id+"'s Category")
+}
+
+func (r *CategoryReceiver) Delete(c echo.Context) error {
+	id := c.Param("id")
+
+	if err := r.DB.Delete(&models.Category{}, id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "Deleted "+id+"'s Category")
 }
