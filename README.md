@@ -1,2 +1,2 @@
 # vatan
-![alt text](http://url/to/diagram.png)
+![alt text](https://github.com/[fleimkeipa]/[vatan]/blob/[main]/diagram.png?raw=true)
