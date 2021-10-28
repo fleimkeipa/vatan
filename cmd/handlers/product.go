@@ -14,23 +14,17 @@ type ProductReceiver struct {
 }
 
 func (r *ProductReceiver) GetAll(c echo.Context) error {
-	//categoryId == categories.id
-	//featureId == feature.id
-	products := pkg.FillProduct(r.DB, "0")
-	if products == nil {
-		return c.JSON(http.StatusBadRequest, "Records not found")
-	}
-	c.JSON(http.StatusOK, products)
-	return nil
+	products := []models.Product{}
+	r.DB.Preload("Feature").Preload("Category").Find(&products)
+
+	return c.JSON(http.StatusOK, products)
 }
 
 func (r *ProductReceiver) Get(c echo.Context) error {
 	id := c.Param("id")
 
-	data := pkg.FillProduct(r.DB, id)
-	if data == nil {
-		return c.JSON(http.StatusBadRequest, "Record not found")
-	}
+	data := models.Product{}
+	r.DB.Preload("Feature").Preload("Category").First(&data, "id", id)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -61,30 +55,30 @@ func (r *ProductReceiver) Filter(c echo.Context) error {
 	if counter == 1 && len(params) == 1 {
 		for i, v := range params {
 			if i == "feature" || i == "category" { //feature_id || category_id
-				if err := r.DB.Find(&products2, i+"_id", v).Error; err != nil {
+				if err := r.DB.Preload("Category").Preload("Feature").Find(&products2, i+"_id", v).Error; err != nil {
 					return c.JSON(http.StatusBadRequest, err.Error())
 				}
 			}
 		}
 	} else if counter == 2 && len(params) == 2 {
-		if err := r.DB.Where("feature_id", params["feature"]).Where("category_id", params["category"]).Find(&products2).Error; err != nil {
+		if err := r.DB.Preload("Category").Preload("Feature").Where("feature_id", params["feature"]).Where("category_id", params["category"]).Find(&products2).Error; err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 	} else {
 		for i, v := range params {
 			if i == "selled" {
-				if err := r.DB.First(&invoice, "product_id", v).Error; err != nil {
+				if err := r.DB.Preload("Category").Preload("Feature").First(&invoice, "product_id", v).Error; err != nil {
 					return c.JSON(http.StatusBadRequest, err.Error())
 				}
 
-				if err := r.DB.First(&product, "id", invoice.ProductId).Error; err != nil {
+				if err := r.DB.Preload("Category").Preload("Feature").First(&product, "id", invoice.ProductId).Error; err != nil {
 					return c.JSON(http.StatusBadRequest, err.Error())
 				}
 				products = append(products, product)
 			}
 
 			if i == "deleted" {
-				if err := r.DB.Unscoped().Where("deleted_at IS NOT NULL").Find(&product).Error; err != nil {
+				if err := r.DB.Preload("Category").Preload("Feature").Unscoped().Where("deleted_at IS NOT NULL").Find(&product).Error; err != nil {
 					return c.JSON(http.StatusBadRequest, err.Error())
 				}
 
@@ -92,7 +86,7 @@ func (r *ProductReceiver) Filter(c echo.Context) error {
 			}
 
 			if i == "feature" || i == "category" { //feature_id || category_id
-				if err := r.DB.First(&product, i+"_id", v).Error; err != nil {
+				if err := r.DB.Preload("Category").Preload("Feature").First(&product, i+"_id", v).Error; err != nil {
 					return c.JSON(http.StatusBadRequest, err.Error())
 				}
 				products = append(products, product)
@@ -111,9 +105,11 @@ func (r *ProductReceiver) Filter(c echo.Context) error {
 			products2 = products
 		}
 	}
+
 	if products2[0].ID == 0 {
 		return c.JSON(http.StatusBadRequest, "record not found")
 	}
+
 	return c.JSON(http.StatusOK, products2)
 }
 

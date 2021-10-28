@@ -16,13 +16,8 @@ type InvoceReceiver struct {
 func (r *InvoceReceiver) GetAll(c echo.Context) error {
 	invoces := []models.Invoice{}
 
-	if err := r.DB.Find(&invoces).Error; err != nil {
+	if err := r.DB.Preload("Product").Preload("Product.Category").Preload("Product.Feature").Find(&invoces).Error; err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	invoces = pkg.FillProductForInvoice(r.DB, invoces)
-	if invoces == nil {
-		return c.JSON(http.StatusBadRequest, "Records not found")
 	}
 
 	return c.JSON(http.StatusOK, invoces)
@@ -33,12 +28,7 @@ func (r *InvoceReceiver) Get(c echo.Context) error {
 
 	invoice := models.Invoice{}
 
-	invoice.Product = pkg.FillProduct(r.DB, id)[0]
-	if invoice.Product.Name == "" {
-		return c.JSON(http.StatusBadRequest, "Record not found")
-	}
-
-	if err := r.DB.First(&invoice, id).Error; err != nil {
+	if err := r.DB.Preload("Product").Preload("Product.Category").Preload("Product.Feature").First(&invoice, id).Error; err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
