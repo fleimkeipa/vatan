@@ -6,3 +6,5 @@ password  = password    </br>
 db        = dbName      </br>
 
 ![alt text](https://github.com/fleimkeipa/vatan/blob/main/diagram.png?raw=true)
+
+End Points are inside cmd/handlers
