@@ -16,8 +16,8 @@ func InitDB() *gorm.DB {
 	}
 
 	dsn :=
-		os.Getenv("username") + ":" +
-			os.Getenv("password") + "@tcp(127.0.0.1:3306)/" +
+		os.Getenv("user") + ":" +
+			os.Getenv("password") + "@tcp(" + os.Getenv("host") + ")/" +
 			os.Getenv("db") + "?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
