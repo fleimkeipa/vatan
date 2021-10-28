@@ -3,6 +3,6 @@
 
 .env
 
-username = hostUsername
+username = hostUsername </br>
 password = hostPassword
 db       = dbName
