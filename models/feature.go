@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type Features struct {
+type Feature struct {
 	gorm.Model
 	Desc string
 }

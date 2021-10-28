@@ -15,10 +15,10 @@ func FillDB(db *gorm.DB) {
 	}
 	db.Create(&category)
 
-	features := [4]models.Features{}
-	db.Exec("DELETE FROM features")
+	feature := [4]models.Feature{}
+	db.Exec("DELETE FROM feature")
 	for i := 0; i < 4; i++ {
-		features[i].Desc = "desc " + strconv.Itoa(i)
+		feature[i].Desc = "desc " + strconv.Itoa(i)
 	}
-	db.Create(&features)
+	db.Create(&feature)
 }

@@ -1,6 +1,6 @@
 package models
 
-type ProductFeatures struct {
-	ProductId  string `gorm:"foreignKey:productId"`
-	FeaturesId string `gorm:"foreignKey:invoceId"`
+type ProductFeature struct {
+	ProductId string `gorm:"foreignKey:productId"`
+	FeatureId string `gorm:"foreignKey:invoceId"`
 }

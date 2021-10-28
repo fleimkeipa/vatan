@@ -10,7 +10,7 @@ type Product struct {
 	Price      float32
 	Name       string
 	CategoryId int `json:"categoryId" gorm:"foreignKey=categoryId"`
-	FeaturesId int `json:"featuresId" gorm:"foreignKey=featuresId"`
+	FeatureId  int `json:"featureId" gorm:"foreignKey=featureId"`
 	Category   Category
-	Features   Features
+	Feature    Feature
 }
