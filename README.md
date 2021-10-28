@@ -4,5 +4,5 @@
 .env
 
 username = hostUsername </br>
-password = hostPassword
+password = hostPassword </br>
 db       = dbName
